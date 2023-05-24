@@ -13,48 +13,61 @@ export class AssetTransferContract extends Contract {
     @Transaction()
     public async InitLedger(ctx: Context): Promise<void> {
         const assets: Asset[] = [
+
             {
-                ID: 'asset1',
-                Color: 'blue',
-                Size: 5,
-                Owner: 'Tomoko',
-                AppraisedValue: 300,
+                ID: '1',
+                Name: 'Muthu',
+                Amount: 500,
             },
+
             {
-                ID: 'asset2',
-                Color: 'red',
-                Size: 5,
-                Owner: 'Brad',
-                AppraisedValue: 400,
+                ID: '2',
+                Name: 'Shivram',
+                Amount: 400,
             },
-            {
-                ID: 'asset3',
-                Color: 'green',
-                Size: 10,
-                Owner: 'Jin Soo',
-                AppraisedValue: 500,
-            },
-            {
-                ID: 'asset4',
-                Color: 'yellow',
-                Size: 10,
-                Owner: 'Max',
-                AppraisedValue: 600,
-            },
-            {
-                ID: 'asset5',
-                Color: 'black',
-                Size: 15,
-                Owner: 'Adriana',
-                AppraisedValue: 700,
-            },
-            {
-                ID: 'asset6',
-                Color: 'white',
-                Size: 15,
-                Owner: 'Michel',
-                AppraisedValue: 800,
-            },
+            // {
+            //     ID: 'asset1',
+            //     Color: 'blue',
+            //     Size: 5,
+            //     Owner: 'Tomoko',
+            //     AppraisedValue: 300,
+            // },
+            // {
+            //     ID: 'asset2',
+            //     Color: 'red',
+            //     Size: 5,
+            //     Owner: 'Brad',
+            //     AppraisedValue: 400,
+            // },
+            // {
+            //     ID: 'asset3',
+            //     Color: 'green',
+            //     Size: 10,
+            //     Owner: 'Jin Soo',
+            //     AppraisedValue: 500,
+            // },
+      
+            // {
+            //     ID: 'asset4',
+            //     Color: 'yellow',
+            //     Size: 10,
+            //     Owner: 'Max',
+            //     AppraisedValue: 600,
+            // },
+            // {
+            //     ID: 'asset5',
+            //     Color: 'black',
+            //     Size: 15,
+            //     Owner: 'Adriana',
+            //     AppraisedValue: 700,
+            // },
+            // {
+            //     ID: 'asset6',
+            //     Color: 'white',
+            //     Size: 15,
+            //     Owner: 'Michel',
+            //     AppraisedValue: 800,
+            // },
         ];
 
         for (const asset of assets) {
@@ -69,8 +82,27 @@ export class AssetTransferContract extends Contract {
     }
 
     // CreateAsset issues a new asset to the world state with given details.
+    // @Transaction()
+    // public async CreateAsset(ctx: Context, id: string, color: string, size: number, owner: string, appraisedValue: number): Promise<void> {
+    //     const exists = await this.AssetExists(ctx, id);
+    //     if (exists) {
+    //         throw new Error(`The asset ${id} already exists`);
+    //     }
+
+    //     const asset = {
+    //         ID: id,
+    //         Color: color,
+    //         Size: size,
+    //         Owner: owner,
+    //         AppraisedValue: appraisedValue,
+    //     };
+    //     // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
+    //     await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(asset))));
+    // }
+
+    // Create a new asset 
     @Transaction()
-    public async CreateAsset(ctx: Context, id: string, color: string, size: number, owner: string, appraisedValue: number): Promise<void> {
+    public async CreateAsset(ctx: Context, id: string, name: string, amount: number): Promise<void> {
         const exists = await this.AssetExists(ctx, id);
         if (exists) {
             throw new Error(`The asset ${id} already exists`);
@@ -78,14 +110,13 @@ export class AssetTransferContract extends Contract {
 
         const asset = {
             ID: id,
-            Color: color,
-            Size: size,
-            Owner: owner,
-            AppraisedValue: appraisedValue,
+            Name: name,
+            Amount: amount,
         };
         // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
         await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(asset))));
     }
+
 
     // ReadAsset returns the asset stored in the world state with given id.
     @Transaction(false)
@@ -97,25 +128,34 @@ export class AssetTransferContract extends Contract {
         return assetJSON.toString();
     }
 
-    // UpdateAsset updates an existing asset in the world state with provided parameters.
-    @Transaction()
-    public async UpdateAsset(ctx: Context, id: string, color: string, size: number, owner: string, appraisedValue: number): Promise<void> {
-        const exists = await this.AssetExists(ctx, id);
-        if (!exists) {
-            throw new Error(`The asset ${id} does not exist`);
-        }
+    // @Transaction(false)
+    // public async ReadAsset(ctx: Context, name: string): Promise<string> {
+    //     const assetJSON = await ctx.stub.getState(name); // get the asset from chaincode state
+    //     if (!assetJSON || assetJSON.length === 0) {
+    //         throw new Error(`The asset ${name} does not exist`);
+    //     }
+    //     return assetJSON.toString();
+    // }
 
-        // overwriting original asset with new asset
-        const updatedAsset = {
-            ID: id,
-            Color: color,
-            Size: size,
-            Owner: owner,
-            AppraisedValue: appraisedValue,
-        };
-        // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
-        return ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(updatedAsset))));
-    }
+    // UpdateAsset updates an existing asset in the world state with provided parameters.
+    // @Transaction()
+    // public async UpdateAsset(ctx: Context, id: string, color: string, size: number, owner: string, appraisedValue: number): Promise<void> {
+    //     const exists = await this.AssetExists(ctx, id);
+    //     if (!exists) {
+    //         throw new Error(`The asset ${id} does not exist`);
+    //     }
+
+    //     // overwriting original asset with new asset
+    //     const updatedAsset = {
+    //         ID: id,
+    //         Color: color,
+    //         Size: size,
+    //         Owner: owner,
+    //         AppraisedValue: appraisedValue,
+    //     };
+    //     // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
+    //     return ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(updatedAsset))));
+    // }
 
     // DeleteAsset deletes an given asset from the world state.
     @Transaction()
@@ -136,15 +176,36 @@ export class AssetTransferContract extends Contract {
     }
 
     // TransferAsset updates the owner field of asset with given id in the world state, and returns the old owner.
+    // @Transaction()
+    // public async TransferAsset(ctx: Context, id: string, newOwner: string): Promise<string> {
+    //     const assetString = await this.ReadAsset(ctx, id);
+    //     const asset = JSON.parse(assetString);
+    //     const oldOwner = asset.Owner;
+    //     asset.Owner = newOwner;
+    //     // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
+    //     await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(asset))));
+    //     return oldOwner;
+    // }
+
+     // TransferAsset updates the owner field of asset with given id in the world state, and returns the old owner.
     @Transaction()
-    public async TransferAsset(ctx: Context, id: string, newOwner: string): Promise<string> {
-        const assetString = await this.ReadAsset(ctx, id);
+    public async TransferAsset(ctx: Context, fromid: string, toid: string ,  amount: number): Promise<string> {
+        const assetString = await this.ReadAsset(ctx, fromid);
         const asset = JSON.parse(assetString);
-        const oldOwner = asset.Owner;
-        asset.Owner = newOwner;
+        const oldamount = asset.Amount;
+        const oldname = asset.Name;
+        asset.Amount = oldamount - amount ;
         // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
-        await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(asset))));
-        return oldOwner;
+        await ctx.stub.putState(fromid, Buffer.from(stringify(sortKeysRecursive(asset))));
+       
+        const assetStringNew = await this.ReadAsset(ctx, toid);
+        const asseNew = JSON.parse(assetString);
+        const newAmount = asset.Amount;
+        asset.Amount = newAmount + amount ;
+        // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
+        await ctx.stub.putState(toid, Buffer.from(stringify(sortKeysRecursive(asset))));   
+       
+        return oldname;
     }
 
     // GetAllAssets returns all assets found in the world state.
